@@ -1,0 +1,36 @@
+@startuml
+class HUDTalk {
+    m_tf : Transform
+    m_MeshRender : HUDRender
+    m_HyperlinkNode : BetterList<HUDVertex>
+    m_fStartTime : float
+    m_fEndTime : float
+    m_szTalk : string
+    m_bHaveHyperlink : bool = false
+    ReleaseTalk() : void
+    Render(cmdBuffer:CommandBuffer) : void
+    CheckPos(bCameraDirty:bool, vCameraPos:Vector3) : void
+    FillMesh() : void
+    ShowTalk(szTalk:string, nColorIndex:int) : void
+    UpdateGif(bMeshDirth:bool, deltaTime:float) : void
+    RebuildCharUV(uiFont:UIFont) : void
+}
+class HUDTalkRender {
+    {static} s_HUDTalkRenderIns : HUDTalkRender = null
+    + {static} Instance : HUDTalkRender <<get>>
+    m_TalkList : List<HUDTalk>
+    m_bMeshDirty : bool = false
+    m_bHideAllTalk : bool = false
+    + ShowTalk(tf:Transform, szTalk:string, fOffsetY:float, fShowTime:float, nColorIndex:int) : void
+    EraseTalk(tf:Transform) : void
+    + IsMeshDirty() : bool
+    + OnAllFontChanged(uiFont:UIFont) : void
+    + IsHideAllTalk() : bool
+    + HideAllTalk() : void
+    + ShowAllTalk() : void
+    + UpdateLogic(bCameraDirty:bool, vCameraPos:Vector3) : void
+    + TryRenderTalk(cmdBuffer:CommandBuffer) : bool
+}
+HUDTitleBase <|-- HUDTalk
+HUDTalk +-- HUDTalkRender
+@enduml

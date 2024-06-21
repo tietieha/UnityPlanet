@@ -1,0 +1,104 @@
+@startuml
+enum UIFontUnitType {
+    UnitType_Char,
+    UnitType_Icon,
+    UnitType_Gif,
+    UnitType_Link,
+    UnitType_Space,
+    UnitType_Enter,
+}
+enum UIHyperlinkType {
+    None,
+    Underline,
+    Underline_Flash,
+}
+class UIFontUnit {
+    + m_nX : int
+    + m_nY : int
+    + m_nWidth : int
+    + m_nHeight : int
+    + m_nLineHeight : int
+    + m_type : UIFontUnitType
+    + m_nIconID : int
+    + m_nObjIndex : int
+    + m_nRow : int
+    + m_nCharPos : int
+    + m_ch : char
+    + m_color1 : Color32
+    + m_color2 : Color32
+    + m_color3 : Color32
+    + m_color4 : Color32
+    + m_bCustomColor : bool
+    + m_bZoom : bool
+    + right : int <<get>>
+    + bottom : int <<get>>
+    + midX : int <<get>>
+}
+class UIFontCustomObject {
+    + m_type : UIFontUnitType
+    + m_nIconID : int
+    + m_szLink : string
+    + m_szCustomDesc : string
+    + m_HyperlinkType : UIHyperlinkType
+}
+class HUDCharInfo <<struct>> {
+    + CharType : UIFontUnitType
+    + bChar : bool
+    + bCustomColor : bool
+    + ch : char
+    + SpriteID : int
+    + SpriteWidth : short
+    + SpriteHeight : short
+    + CustomColor : Color32
+    + nX : int
+    + nY : int
+    + nLine : int
+    + LineH : int
+}
+class HUDTextParse {
+    + m_Sprites : HUDCharInfo[]
+    + LineHeight : short[]
+    + m_SpriteCount : int
+    + m_szText : string
+    m_ValidChars : char[]
+    m_nCharCount : int
+    m_bCharDirty : bool = false
+    m_colors : BetterList<Color32>
+    m_CustomObj : List<UIFontCustomObject>
+    {static} s_pTextParse : HUDTextParse
+    + {static} Instance : HUDTextParse <<get>>
+    Init() : void
+    AutoGrow() : void
+    push_char(ch:char, nCharPos:int) : void
+    push_enter(ch:char, nCharPos:int) : void
+    GetX16(iStart:int) : int
+    IsColorARGB(szText:string, iStart:int) : bool
+    GetColorValue(szText:string, iStart:int) : int
+    AnylseColorARGB(iStart:int) : void
+    TryParseOldColor(iStart:int) : bool
+    ParseEndCode(iStart:int) : void
+    TryParseColorARGB(iStart:int) : bool
+    ParseColorRGB(iStart:int) : bool
+    ParseMulNumb(aNumb:int[], iStart:int, chEnd:char, chTab:char) : int
+    push_icon(nIconID:int, nWidth:int, nHeight:int, nCharPos:int) : void
+    push_gif(nGifID:int, nWidth:int, nHeight:int, nCharPos:int) : void
+    SetLastColor(pNode:HUDCharInfo) : void
+    GetLastColor() : Color32
+    ParseIocnID(iStart:int) : void
+    ParseIconName(iStart:int) : void
+    ParseGifName(iStart:int) : void
+    push_link_char(ch:char, nCharPos:int, nObjIndex:int) : void
+    push_link(szLink:string, szCustomDesc:string, nCharPos:int, linkType:UIHyperlinkType) : void
+    TryParseOldColor(szText:string, iStart:int) : bool
+    ParseLinkColorARGB(szText:string, iStart:int) : void
+    IsColorRGB(szText:string, iStart:int) : bool
+    ParseColorRGB(szText:string, iStart:int) : bool
+    ScaleLinkColor(szLink:string, szCustomDesc:string, nCharPos:int) : void
+    ParseLink(iStart:int) : void
+    ParseNumb(nIconID:int, iStart:int, chEnd1:char, chEnd2:char) : bool
+    push_space(nW:int, nH:int, nCharPos:int) : void
+    ParseSpace(iStart:int) : void
+    ParseObject(iStart:int) : void
+    + ParseText(szText:string) : void
+}
+@enduml

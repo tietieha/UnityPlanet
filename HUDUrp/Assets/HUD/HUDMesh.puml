@@ -1,0 +1,101 @@
+@startuml
+class HUDGif {
+    m_FrameInfo : UISpriteGifFrame[]
+    m_fPassTime : float
+    m_nCurFrame : int = 0
+    + InitGif(nGifID:int) : void
+    + Update(deltaTime:float) : bool
+    + GetSpriteID() : int
+}
+class HUDVertex {
+    m_pNext : HUDVertex
+    m_nID : int
+    {static} s_InvalidList : HUDVertex
+    {static} s_nInvalidCount : int = 0
+    {static} s_nVertexID : int = 0
+    + {static} QueryVertex() : HUDVertex
+    + {static} ReleaseVertex(p:HUDVertex) : void
+    + ID : int <<get>>
+    + vecRU : Vector2
+    + vecRD : Vector2
+    + vecLD : Vector2
+    + vecLU : Vector2
+    + uvRD : Vector2
+    + uvRU : Vector2
+    + uvLU : Vector2
+    + uvLD : Vector2
+    + clrRD : Color32
+    + clrRU : Color32
+    + clrLU : Color32
+    + clrLD : Color32
+    + WorldPos : Vector3
+    + ScreenPos : Vector2
+    + Offset : Vector2
+    + Move : Vector2
+    + Scale : float
+    + SpriteID : int
+    + AtlasID : int
+    + ch : char
+    + width : short
+    + height : short
+    + hudMesh : HUDMesh
+    + m_hudVertexIndex : int
+    + hudGif : HUDGif
+    + {static} GetCharWidth(chInfo:CharacterInfo) : int
+    + InitChar(chInfo:CharacterInfo) : void
+    + RebuildCharUV(chInfo:CharacterInfo) : void
+    {static} + ConvertToTexCoords(rect:Rect, width:int, height:int) : Rect
+    + InitSprite(nWidth:int, nHeight:int) : void
+    + SlicedFill(nWidth:int, nHeight:int, fOffsetX:float, fOffsetY:float, uvL:float, uvT:float, uvR:float, uvB:float) : void
+}
+class HUDMesh {
+    + m_Mesh : Mesh
+    + m_mat : Material
+    + mFont : UIFont
+    + mVerts : BetterList<Vector3>
+    + mOffset : BetterList<Vector2>
+    + mUvs : BetterList<Vector2>
+    + mCols : BetterList<Color32>
+    + mIndices : BetterList<int>
+    + m_Scale : float = 1.0f
+    m_nVertexExt : int = 0
+    m_nOldSpriteNumb : int = 0
+    m_tempCharInfo : CharacterInfo
+    m_SpriteVertex : BetterList<HUDVertex>
+    m_bQueryTexture : bool = false
+    mAtlasID : int = 0
+    mDirty : bool = false
+    mHaveNullVertex : bool = false
+    {static} s_mainCamera : Camera
+    + {static} s_bEnterGame : bool = false
+    + {static} s_fCameraScale : float = 0.8f
+    + {static} s_fCameraScaleX : float = 0.8f
+    + {static} s_fCameraScaleY : float = 0.8f
+    + {static} s_fNumberScale : float = 1.0f
+    + {static} OnEnterGame() : void
+    + {static} OnLeaveGame() : void
+    + {static} GetHUDMainCamera() : Camera
+    + SetAtlasID(nAtlasID:int) : void
+    + AtlasID : int <<get>>
+    - QueryTexture() : void
+    - ReleaseTexture() : void
+    GetReserveY() : float
+    OnLoadHudAtlas() : void
+    + SetFont(font:UIFont) : void
+    + Release() : void
+    + CleanAllVertex() : void
+    + FastClearVertex() : void
+    + PushHUDVertex(v:HUDVertex) : void
+    + EraseHUDVertex(v:HUDVertex) : void
+    + VertexDirty() : void
+    + IsDirty() : bool
+    + SpriteNumb : int <<get>>
+    + OldSpriteNumb : int <<get>>
+    + UpdateLogic() : void
+    FillVertex() : void
+    PrepareWrite(nVertexNumb:int) : void
+    UpdateMesh() : void
+    AdjustIndexs(nVertexCount:int) : void
+    + PushChar(vWorld:Vector3, fScreenX:float, fScreenY:float, fLocalX:float, fLocalY:float, ch:char, clrLeftUp:Color, clrLeftDown:Color, clrRightUp:Color, clrRightDown:Color) : void
+}
+@enduml

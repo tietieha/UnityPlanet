@@ -1,0 +1,38 @@
+@startuml
+class HUDTitleBase {
+    + m_vPos : Vector3
+    + m_vScreenPos : Vector2
+    + m_fScale : float = 1.0f
+    + m_fOffsetY : float
+    # m_aSprite : BetterList<HUDVertex>
+    {static} s_pFont : UIFont = null
+    + {static} GetHUDTitleFont() : UIFont
+    # ClearSprite() : void
+    # CaleCameraScale(vCameraPos:Vector3) : void
+    # OnChangeScreenPos() : void
+    # PrepareRebuildMesh() : void
+    # SetScale(fScale:float) : void
+    # SlicedFill(nSpriteID:int, nWidth:int, nHeight:int, nStart:int, fBloodPos:float) : void
+    # PushSprite(nSpriteID:int, nWidth:int, nHeight:int, fx:float, fy:float) : HUDVertex
+    # PushChar(tempCharInfo:CharacterInfo, ch:char, fx:float, fy:float, clrLeftUp:Color32, clrLeftDown:Color32, clrRightUp:Color32, clrRightDown:Color32) : HUDVertex
+    # PushShadow(tempCharInfo:CharacterInfo, ch:char, fx:float, fy:float, clrShadow:Color32, fMoveX:float, fMoveY:float) : HUDVertex
+    # OffsetXY(nStart:int, nEnd:int, fOffsetX:float, fOffsetY:float) : void
+    # Offset(nStart:int, nEnd:int, fOffsetX:float, fOffsetY:float) : void
+    # AlignDown(nStart:int, nEnd:int, fOffsetX:float, fHeight:float) : void
+}
+class HUDRender {
+    m_MeshList : BetterList<HUDMesh>
+    m_ValidList : BetterList<HUDMesh>
+    m_MeshFont : HUDMesh
+    m_curFontMesh : HUDMesh
+    + m_bMeshDirty : bool
+    + QueryMesh(nAtlasID:int) : HUDMesh
+    + FontMesh() : HUDMesh
+    + OnChangeFont(uiFont:UIFont) : void
+    + Release() : void
+    + FastClearVertex() : void
+    + FillMesh() : void
+    + OnCacelRender() : void
+    + RenderTo(cmdBuffer:CommandBuffer) : void
+}
+@enduml

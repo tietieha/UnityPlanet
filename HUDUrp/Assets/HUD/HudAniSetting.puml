@@ -1,0 +1,157 @@
+@startuml
+enum HUDAlignType {
+    align_left,
+    align_center,
+    align_right,
+}
+enum HUDBloodType {
+    Blood_None,
+    Blood_Red,
+    Blood_Green,
+    Blood_Blue,
+}
+class HudAnimAttibute <<struct>> {
+    + AlphaCurve : AnimationCurve
+    + ScaleCurve : AnimationCurve
+    + MoveCurve : AnimationCurve
+    + OffsetX : float
+    + OffsetY : float
+    + GapTime : float
+    + SpriteGap : int
+    + AlignType : HUDAlignType
+    + ScreenAlign : bool
+    + ScreenAlignType : HUDAlignType
+}
+class HudTitleAttribute <<struct>> {
+    + Style : Effect
+    + clrShadow : Color32
+    + OffsetX : int
+    + OffsetY : int
+    + clrLeftUp : Color
+    + clrLeftDown : Color
+    + clrRightUp : Color
+    + clrRightDown : Color
+    + CharGap : int
+    + LineGap : int
+    + Height : int
+    + AlignType : HUDAlignType
+    + LockMaxHeight : int
+    + SpriteReduceHeight : int
+    + SpriteOffsetY : int
+    + FontOffsetY : int
+}
+class HudTitleLabelSet {
+    + m_pData : HudTitleAttribute[]
+    + HudTitleLabelSet(p:HudTitleAttribute)
+    + HudTitleLabelSet(pArray:HudTitleAttribute [])
+    + GetTitle(nIndex:int) : HudTitleAttribute
+}
+class HudSetting {
+    {static} s_pHudSetting : HudSetting = null
+    + {static} Instance : HudSetting <<get>>
+    + {static} ApplySetting(hudSetting:HudAniSetting) : void
+    + m_fDurationTime : float = 2.0f
+    + m_fCalbackTime : float = 1.0f
+    + m_bKeep1280x720 : bool = true
+    + m_fTitleScaleMin : float = 0.1f
+    + m_fTitleScaleMax : float = 0.8f
+    + m_fNumberScaleMin : float = 0.8f
+    + m_fNumberScaleMax : float = 0.8f
+    + CameraNearDist : float = 6.5f
+    + CameraFarDist : float = 40.0f
+    + m_fTitleOffsetY : float = 0.5f
+    + m_nBloodBk : int
+    + m_nBloodRed : int
+    + m_nBloodGreen : int
+    + m_nBloodBlue : int
+    + m_nBloodBkWidth : int
+    + m_nBloodBkHeight : int
+    + m_nBloodWidth : int
+    + m_nBloodHeight : int
+    + m_fTestBloodPos : float = 1.0f
+    + m_nTeamFlagPic : int
+    + m_nPKFlagPic : int
+    + m_nNpcMissionPic : int
+    + MeridianPic : int[]
+    + NumberAttibute : HudAnimAttibute []
+    + TitleSets : HudTitleLabelSet[]
+    + m_nTalkBk : int
+    + m_nTalkWidth : int = 300
+    + TalkBorderWidth : int = 15
+    + TalkBorderHeight : int = 20
+    + m_nTalkBkOffsetY : int
+    + m_fTalkShowTime : float = 5.0f
+    + m_fTalkOffsetY : float = 0.2f
+    + m_vTalkOffset : Vector2
+    + TalkTitle : HudTitleAttribute[]
+    + HideAllTitle : bool = false
+    - Init() : void
+    + InitSetting(hudSetting:HudAniSetting) : void
+}
+class HudAniSetting {
+    + m_fDurationTime : float = 2.0f
+    + m_fCalbackTime : float = 1.0f
+    + m_bKeep1280x720 : bool = true
+    + HurtAnimAttibute : HudAnimAttibute
+    + CommonAnimAttibute : HudAnimAttibute
+    + CtAnimAttibute : HudAnimAttibute
+    + RecoverAnimAttibute : HudAnimAttibute
+    + ExpAnimAttibute : HudAnimAttibute
+    + LifeExpAnimAttibute : HudAnimAttibute
+    + AbsorbAnimAttibute : HudAnimAttibute
+    + DodgeAnimAttibute : HudAnimAttibute
+    + MoneyAnimAttibute : HudAnimAttibute
+    + XinfaAnimAttibute : HudAnimAttibute
+    + CtedAnimAttibute : HudAnimAttibute
+    + PetDemAnimAttibute : HudAnimAttibute
+    + m_fTitleScaleMin : float = 0.1f
+    + m_fTitleScaleMax : float = 0.8f
+    + m_fTitleOffsetY : float = 0.5f
+    + m_fNumberScaleMin : float = 0.8f
+    + m_fNumberScaleMax : float = 0.8f
+    + CameraNearDist : float = 6.5f
+    + CameraFarDist : float = 40.0f
+    + m_szBloodBk : string
+    + m_szBloodRed : string
+    + m_szBloodGreen : string
+    + m_szBloodBlue : string
+    + m_nBloodBkWidth : int
+    + m_nBloodBkHeight : int
+    + m_nBloodWidth : int
+    + m_nBloodHeight : int
+    + m_fTestBloodPos : float = 1.0f
+    + TeamFlagSprite : string
+    + PKFlagSprite : string
+    + NpcMessionSprite : string
+    + MeridianNumbHeader : string
+    + PlayerCorp : HudTitleAttribute
+    + ItemName : HudTitleAttribute
+    + PetName : HudTitleAttribute
+    + Blood : HudTitleAttribute
+    + PKFlag : HudTitleAttribute
+    + HeadIcon : HudTitleAttribute
+    + PlayerTitle : HudTitleAttribute[]
+    + PrestigeTitle : HudTitleAttribute[]
+    + DesignationTitle : HudTitleAttribute[]
+    + MonsterTitle : HudTitleAttribute[]
+    + m_szTalkBk : string
+    + m_nTalkWidth : int = 300
+    + TalkBorderWidth : int = 15
+    + TalkBorderHeight : int = 20
+    + m_nTalkBkOffsetY : int
+    + m_fTalkShowTime : float = 5.0f
+    + m_fTalkOffsetY : float = 0.2f
+    + m_vTalkOffset : Vector2
+    + TalkTitle : HudTitleAttribute []
+    + HideAllTitle : bool = false
+    + CopyFirst : bool = false
+    + bRefresh : bool = false
+}
+enum Effect {
+    None,
+    Shadow,
+    Outline,
+}
+MonoBehaviour <|-- HudAniSetting
+HudTitleAttribute +-- Effect
+@enduml

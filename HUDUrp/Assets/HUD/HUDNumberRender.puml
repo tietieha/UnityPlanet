@@ -1,0 +1,107 @@
+@startuml
+enum HUDNumberRenderType {
+    HUD_SHOW_EXP_ADD,
+    HUD_SHOW_LIFE_EXP,
+    HUD_SHOW_MONEY_ADD,
+    HUD_SHOW_XINFA,
+    HUD_SHOW_HP_HURT,
+    HUD_SHOW_COMMON_ATTACK,
+    HUD_SHOW_CT_ATTACKED,
+    HUD_SHOW_CT_ATTACK,
+    HUD_SHOW_ABSORB,
+    HUB_SHOW_DODGE,
+    HUD_SHOW_RECOVER_HP,
+    HUD_SHOW_PET_ATTACK,
+    HUD_SHOW_NUMBER,
+}
+class HUDNumberEntry {
+    + m_tf : Transform
+    + m_pNext : HUDNumberEntry
+    + m_nType : HUDNumberRenderType
+    + m_vPos : Vector3
+    + m_vScreenPos : Vector2
+    + m_vInitOffset : Vector2
+    + m_vMove : Vector2
+    + m_fAniScale : float
+    + m_fScale : float
+    + m_fAlpha : float
+    + m_aSprite : BetterList<HUDVertex>
+    + m_nWidth : int = 0
+    + m_nHeight : int = 0
+    + m_nSpriteGap : int = 0
+    + m_fStartTime : float = 0.0f
+    + m_bStop : bool = false
+    + reset() : void
+    + ReleaseVertex() : void
+    + UpdateScreenPos(attrib:HudAnimAttibute) : bool
+    + CaleCameraScale(vCameraPos:Vector3) : void
+    + PushSprite(y:float, nSpriteID:int) : void
+    + MakeLeft() : void
+    + MakeCenter() : void
+    + MakeRight() : void
+    MoveAll(fMoveX:float) : void
+}
+class HUDSprtieSetting {
+    + m_nHeadID : int
+    + m_nAddID : int
+    + m_nSubID : int
+    + m_NumberID : int[]
+    + InitNumber(szHeadName:string, szPrefix:string) : void
+}
+class HUDNumberRender {
+    {static} s_pHUDNumberRenderIns : HUDNumberRender = null
+    + {static} Instance : HUDNumberRender <<get>>
+    m_bInit : bool = false
+    m_bAddUpdateLogic : bool = false
+    m_bKeep1280x720 : bool = true
+    m_bAddCommandBuffer : bool = false
+    m_fLastUpdateLogicTime : float = 0.0f
+    m_aTtribute : HudAnimAttibute[]
+    m_aInvalid : HUDNumberEntry
+    m_Settings : HUDSprtieSetting[]
+    m_fDurationTime : float = 2.0f
+    m_ValidList : HUDNumberEntry
+    m_tempNumb : BetterList<int>
+    m_MeshRender : HUDRender
+    m_bMeshDirty : bool = false
+    m_bCalcCameraScale : bool = false
+    m_bCaleScreenScale : bool = false
+    m_fScreenScaleX : float = 1.0f
+    m_fScreenScaleY : float = 1.0f
+    m_bOpenUI : bool = false
+    m_bOldOpenUI : bool = false
+    m_bStartDark : bool = false
+    m_bStartMovie : bool = false
+    m_bOldStartDark : bool = false
+    m_fStartDarkTime : float = 0.0f
+    m_fDarkTime : float = 0.0f
+    m_oldCamera : Camera
+    m_renderCamera : Camera
+    s_cmdBuffer : CommandBuffer
+    InitHUDSetting(hudSetting:HudSetting) : void
+    + {static} ApplySetting(hudSetting:HudAniSetting) : void
+    + GetCmdBuffer() : CommandBuffer
+    + OnLeaveGame() : void
+    ReleaseCmmmandBuffer() : void
+    + OnOpenUI() : void
+    + OnCloseUI() : void
+    + OnStartScreenDark(fTime:float) : void
+    + OnEndScreenDark() : void
+    + OnBeginMovie() : void
+    + OnEndMovie() : void
+    CleanCurrentNumber() : void
+    InitHUD() : void
+    QueryHudNumber(nType:HUDNumberRenderType) : HUDNumberEntry
+    ReleaseHudNumber(pNode:HUDNumberEntry) : void
+    m_bPuase : bool = false
+    m_currentDuration : float = 0.0f
+    PlayAnimation(pNode:HUDNumberEntry, bFirst:bool) : void
+    OnPush(pNode:HUDNumberEntry) : void
+    OnErase(pNode:HUDNumberEntry) : void
+    FillMeshRender() : void
+    CaleScreenScale() : void
+    UpdateLogic(delta:float) : void
+    CleanAllMeshRender() : void
+    + AddHudNumber(tf:Transform, nType:HUDNumberRenderType, nNumber:int, bShowHead:bool, bShowAdd:bool, bShowSub:bool) : void
+}
+@enduml

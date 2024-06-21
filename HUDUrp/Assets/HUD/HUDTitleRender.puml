@@ -1,0 +1,148 @@
+@startuml
+class HUDTilteLine {
+    + m_szText : string
+    + m_szValidText : string
+    + m_fWidth : float
+    + m_nHeight : int
+    + m_nType : HUDTilteType
+    + m_nColorIndex : int
+    + m_nSpriteID : int
+    + m_nStart : int
+    + m_nEnd : int
+    + m_nLine : int
+}
+enum HUDTilteType {
+    PlayerName,
+    PlayerPrestige,
+    PlayerCorp,
+    PlayerDesignation,
+    MonsterName,
+    ItemName,
+    PetName,
+    Blood,
+    PKFlag,
+    HeadIcon,
+    Tilte_Number,
+}
+class HUDTitleInfo {
+    + m_tf : Transform
+    + m_fDistToCamera : float = 0.0f
+    m_bInitHUDMesh : bool = false
+    m_bNeedHide : bool = false
+    m_bDirty : bool = false
+    m_bIsMain : bool = false
+    m_TitleLine : HUDTilteLine[]
+    m_nTitleNumb : int = 0
+    m_fLineOffsetY : float
+    m_fCurLineHeight : float
+    m_fCurLineWidth : float
+    m_nStartLineIndex : int
+    m_nBloodIndex : int
+    m_nBloodSpriteID : int
+    m_nBloodType : HUDBloodType
+    m_nLines : int
+    m_nMeridianIndex : int
+    m_nMeridianNumb : int
+    m_pBatcher : HUDTitleInfo.HUDTitleBatcher
+    m_nBatcherIndex : int
+    m_fLastMoveTime : float = 0.0f
+    m_nTitleID : int = 0
+    RebuildCharUV(tempCharInfo:CharacterInfo) : void
+    RebuildFontUI() : void
+    ApplyMove(bCameraDirty:bool, vCameraPos:Vector3) : void
+    + EraseSpriteFromMesh() : void
+    + ShowTitle(bShow:bool) : void
+    + OnScale() : void
+    + OnRelease() : void
+    + SetOffsetY(fOffsetY:float) : void
+    + Clear() : void
+    # RebuildForEditor() : void
+    + BeginTitle() : void
+    + EndTitle() : void
+    + PushTitle(szText:string, titleType:HUDTilteType, nColorIndex:int) : void
+    PushMeridianNumber(nNumb:int) : void
+    + ShowMeridianNumber(nMeridianNumb:int) : void
+    + HideMeridianNumber() : void
+    UpdateMeridianNumber(nMeridianNumb:int) : void
+    + PushIcon(titleType:HUDTilteType, nSpriteID:int) : void
+    + PushBlood(nType:HUDBloodType, fBloodPos:float) : void
+    + GetBloodType() : HUDBloodType
+    + SetBloodPos(fBloodPos:float) : void
+    Align() : void
+    PushSliceTitle(nSpriteID:int, nWidth:int, nHeight:int, fx:float, fy:float, fBloodPos:float) : void
+}
+class HUDTitleBatcher {
+    + m_ValidTitles : BetterList<HUDTitleInfo>
+    + m_MeshRender : HUDRender
+    + m_bNeedSort : bool = false
+    + m_bTitleMove : bool = false
+    + m_bStatic : bool = false
+    m_bRebuildMesh : bool = false
+    m_bHaveNullTitle : bool = false
+    m_nSortVeresion : int = 0
+    m_nMaxSortCount : int = 0
+    CompareTitleByDist() : void
+    InitTitleHUDMesh(title:HUDTitleInfo) : void
+    + OnAllFontChanged(uiFont:UIFont) : void
+    PrepareRebuild() : void
+    + UpdateLogic(bCameraDirty:bool, vCameraPos:Vector3) : void
+    + PushTitle(title:HUDTitleInfo) : void
+    + SwitchPushTitle(title:HUDTitleInfo) : void
+    + EraseTitle(title:HUDTitleInfo) : void
+}
+class HUDTitleRender {
+    m_HudTitles : Dictionary<int, HUDTitleInfo>
+    m_DelayReleaseTitles : BetterList<int>
+    m_nHudID : int = 0
+    m_StaticBatcher : HUDTitleBatcher
+    m_DynamicBatcher : HUDTitleBatcher
+    m_bAddUpdate : bool = false
+    m_vLastCameraPos : Vector3
+    m_vLastEulerAngles : Vector3
+    m_renderCameara : Camera
+    m_cmdBuffer : CommandBuffer
+    m_tfMain : Transform
+    m_oldCamera : Camera
+    m_bHideAllTitle : bool = false
+    m_fLastCheckMoveTime : float = 0.0f
+    m_bInitFontCallback : bool = false
+    m_bOpenUI : bool = false
+    m_bOldOpenUI : bool = false
+    m_bStartDark : bool = false
+    m_bOldStartDark : bool = false
+    m_fStartDarkTime : float = 0.0f
+    m_fDarkTime : float = 0.0f
+    m_nUpdateVer : int = 0
+    m_nCameraUpdateVer : int = 0
+    m_nBaseUpdateVer : int = 0
+    m_bMeshDirty : bool = false
+    {static} s_HUDTitleRenderIns : HUDTitleRender = null
+    + {static} Instance : HUDTitleRender <<get>>
+    HUDTitleRender()
+    + GetCmdBuffer() : CommandBuffer
+    + SetMainPlayer(tfMain:Transform) : void
+    + OnEnterGame() : void
+    + OnLeaveGame() : void
+    ReleaseCmmmandBuffer() : void
+    + OnOpenUI() : void
+    + OnCloseUI() : void
+    + ShowAllTitle(bShowAllTitle:bool) : void
+    + OnStartScreenDark(fTime:float) : void
+    + OnEndScreenDark() : void
+    + OnEndMovie() : void
+    + RegisterTitle(tf:Transform, fOffsetY:float, bIsMain:bool) : int
+    + ReleaseTitle(nTitleID:int) : void
+    + ApplySetting(hudSetting:HudAniSetting) : void
+    + GetTitle(nTitleID:int) : HUDTitleInfo
+    OnAllFontChanged(font:Font) : void
+    SwitchDynamieStatic() : void
+    + OnUpdateCameara() : void
+    UpdateLogic(delta:float) : void
+    CaleNumberScale(vCameraPos:Vector3) : void
+    BaseUpdateLogic(delta:float) : void
+    FillMeshRender() : void
+}
+HUDTitleBase <|-- HUDTitleInfo
+HUDTitleInfo +-- HUDTitleBatcher
+HUDTitleInfo +-- HUDTitleRender
+@enduml

@@ -1,0 +1,15 @@
+@startuml
+class HUDRenderPassFeature {
+    m_ScriptablePass : CustomRenderPass
+    + <<override>> Create() : void
+    + <<override>> AddRenderPasses(renderer:ScriptableRenderer, renderingData:RenderingData) : void
+}
+class CustomRenderPass {
+    + <<override>> OnCameraSetup(cmd:CommandBuffer, renderingData:RenderingData) : void
+    + <<override>> Execute(context:ScriptableRenderContext, renderingData:RenderingData) : void
+    + <<override>> OnCameraCleanup(cmd:CommandBuffer) : void
+}
+ScriptableRendererFeature <|-- HUDRenderPassFeature
+HUDRenderPassFeature +-- CustomRenderPass
+ScriptableRenderPass <|-- CustomRenderPass
+@enduml

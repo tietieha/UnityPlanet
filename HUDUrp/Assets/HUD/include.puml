@@ -1,0 +1,692 @@
+@startuml
+enum HUDAlignType {
+    align_left,
+    align_center,
+    align_right,
+}
+enum HUDBloodType {
+    Blood_None,
+    Blood_Red,
+    Blood_Green,
+    Blood_Blue,
+}
+class HudAnimAttibute <<struct>> {
+    + AlphaCurve : AnimationCurve
+    + ScaleCurve : AnimationCurve
+    + MoveCurve : AnimationCurve
+    + OffsetX : float
+    + OffsetY : float
+    + GapTime : float
+    + SpriteGap : int
+    + AlignType : HUDAlignType
+    + ScreenAlign : bool
+    + ScreenAlignType : HUDAlignType
+}
+class HudTitleAttribute <<struct>> {
+    + Style : Effect
+    + clrShadow : Color32
+    + OffsetX : int
+    + OffsetY : int
+    + clrLeftUp : Color
+    + clrLeftDown : Color
+    + clrRightUp : Color
+    + clrRightDown : Color
+    + CharGap : int
+    + LineGap : int
+    + Height : int
+    + AlignType : HUDAlignType
+    + LockMaxHeight : int
+    + SpriteReduceHeight : int
+    + SpriteOffsetY : int
+    + FontOffsetY : int
+}
+class HudTitleLabelSet {
+    + m_pData : HudTitleAttribute[]
+    + HudTitleLabelSet(p:HudTitleAttribute)
+    + HudTitleLabelSet(pArray:HudTitleAttribute [])
+    + GetTitle(nIndex:int) : HudTitleAttribute
+}
+class HudSetting {
+    {static} s_pHudSetting : HudSetting = null
+    + {static} Instance : HudSetting <<get>>
+    + {static} ApplySetting(hudSetting:HudAniSetting) : void
+    + m_fDurationTime : float = 2.0f
+    + m_fCalbackTime : float = 1.0f
+    + m_bKeep1280x720 : bool = true
+    + m_fTitleScaleMin : float = 0.1f
+    + m_fTitleScaleMax : float = 0.8f
+    + m_fNumberScaleMin : float = 0.8f
+    + m_fNumberScaleMax : float = 0.8f
+    + CameraNearDist : float = 6.5f
+    + CameraFarDist : float = 40.0f
+    + m_fTitleOffsetY : float = 0.5f
+    + m_nBloodBk : int
+    + m_nBloodRed : int
+    + m_nBloodGreen : int
+    + m_nBloodBlue : int
+    + m_nBloodBkWidth : int
+    + m_nBloodBkHeight : int
+    + m_nBloodWidth : int
+    + m_nBloodHeight : int
+    + m_fTestBloodPos : float = 1.0f
+    + m_nTeamFlagPic : int
+    + m_nPKFlagPic : int
+    + m_nNpcMissionPic : int
+    + MeridianPic : int[]
+    + NumberAttibute : HudAnimAttibute []
+    + TitleSets : HudTitleLabelSet[]
+    + m_nTalkBk : int
+    + m_nTalkWidth : int = 300
+    + TalkBorderWidth : int = 15
+    + TalkBorderHeight : int = 20
+    + m_nTalkBkOffsetY : int
+    + m_fTalkShowTime : float = 5.0f
+    + m_fTalkOffsetY : float = 0.2f
+    + m_vTalkOffset : Vector2
+    + TalkTitle : HudTitleAttribute[]
+    + HideAllTitle : bool = false
+    - Init() : void
+    + InitSetting(hudSetting:HudAniSetting) : void
+}
+class HudAniSetting {
+    + m_fDurationTime : float = 2.0f
+    + m_fCalbackTime : float = 1.0f
+    + m_bKeep1280x720 : bool = true
+    + HurtAnimAttibute : HudAnimAttibute
+    + CommonAnimAttibute : HudAnimAttibute
+    + CtAnimAttibute : HudAnimAttibute
+    + RecoverAnimAttibute : HudAnimAttibute
+    + ExpAnimAttibute : HudAnimAttibute
+    + LifeExpAnimAttibute : HudAnimAttibute
+    + AbsorbAnimAttibute : HudAnimAttibute
+    + DodgeAnimAttibute : HudAnimAttibute
+    + MoneyAnimAttibute : HudAnimAttibute
+    + XinfaAnimAttibute : HudAnimAttibute
+    + CtedAnimAttibute : HudAnimAttibute
+    + PetDemAnimAttibute : HudAnimAttibute
+    + m_fTitleScaleMin : float = 0.1f
+    + m_fTitleScaleMax : float = 0.8f
+    + m_fTitleOffsetY : float = 0.5f
+    + m_fNumberScaleMin : float = 0.8f
+    + m_fNumberScaleMax : float = 0.8f
+    + CameraNearDist : float = 6.5f
+    + CameraFarDist : float = 40.0f
+    + m_szBloodBk : string
+    + m_szBloodRed : string
+    + m_szBloodGreen : string
+    + m_szBloodBlue : string
+    + m_nBloodBkWidth : int
+    + m_nBloodBkHeight : int
+    + m_nBloodWidth : int
+    + m_nBloodHeight : int
+    + m_fTestBloodPos : float = 1.0f
+    + TeamFlagSprite : string
+    + PKFlagSprite : string
+    + NpcMessionSprite : string
+    + MeridianNumbHeader : string
+    + PlayerCorp : HudTitleAttribute
+    + ItemName : HudTitleAttribute
+    + PetName : HudTitleAttribute
+    + Blood : HudTitleAttribute
+    + PKFlag : HudTitleAttribute
+    + HeadIcon : HudTitleAttribute
+    + PlayerTitle : HudTitleAttribute[]
+    + PrestigeTitle : HudTitleAttribute[]
+    + DesignationTitle : HudTitleAttribute[]
+    + MonsterTitle : HudTitleAttribute[]
+    + m_szTalkBk : string
+    + m_nTalkWidth : int = 300
+    + TalkBorderWidth : int = 15
+    + TalkBorderHeight : int = 20
+    + m_nTalkBkOffsetY : int
+    + m_fTalkShowTime : float = 5.0f
+    + m_fTalkOffsetY : float = 0.2f
+    + m_vTalkOffset : Vector2
+    + TalkTitle : HudTitleAttribute []
+    + HideAllTitle : bool = false
+    + CopyFirst : bool = false
+    + bRefresh : bool = false
+}
+enum Effect {
+    None,
+    Shadow,
+    Outline,
+}
+MonoBehaviour <|-- HudAniSetting
+HudTitleAttribute +-- Effect
+class HUDGif {
+    m_FrameInfo : UISpriteGifFrame[]
+    m_fPassTime : float
+    m_nCurFrame : int = 0
+    + InitGif(nGifID:int) : void
+    + Update(deltaTime:float) : bool
+    + GetSpriteID() : int
+}
+class HUDVertex {
+    m_pNext : HUDVertex
+    m_nID : int
+    {static} s_InvalidList : HUDVertex
+    {static} s_nInvalidCount : int = 0
+    {static} s_nVertexID : int = 0
+    + {static} QueryVertex() : HUDVertex
+    + {static} ReleaseVertex(p:HUDVertex) : void
+    + ID : int <<get>>
+    + vecRU : Vector2
+    + vecRD : Vector2
+    + vecLD : Vector2
+    + vecLU : Vector2
+    + uvRD : Vector2
+    + uvRU : Vector2
+    + uvLU : Vector2
+    + uvLD : Vector2
+    + clrRD : Color32
+    + clrRU : Color32
+    + clrLU : Color32
+    + clrLD : Color32
+    + WorldPos : Vector3
+    + ScreenPos : Vector2
+    + Offset : Vector2
+    + Move : Vector2
+    + Scale : float
+    + SpriteID : int
+    + AtlasID : int
+    + ch : char
+    + width : short
+    + height : short
+    + hudMesh : HUDMesh
+    + m_hudVertexIndex : int
+    + hudGif : HUDGif
+    + {static} GetCharWidth(chInfo:CharacterInfo) : int
+    + InitChar(chInfo:CharacterInfo) : void
+    + RebuildCharUV(chInfo:CharacterInfo) : void
+    {static} + ConvertToTexCoords(rect:Rect, width:int, height:int) : Rect
+    + InitSprite(nWidth:int, nHeight:int) : void
+    + SlicedFill(nWidth:int, nHeight:int, fOffsetX:float, fOffsetY:float, uvL:float, uvT:float, uvR:float, uvB:float) : void
+}
+class HUDMesh {
+    + m_Mesh : Mesh
+    + m_mat : Material
+    + mFont : UIFont
+    + mVerts : BetterList<Vector3>
+    + mOffset : BetterList<Vector2>
+    + mUvs : BetterList<Vector2>
+    + mCols : BetterList<Color32>
+    + mIndices : BetterList<int>
+    + m_Scale : float = 1.0f
+    m_nVertexExt : int = 0
+    m_nOldSpriteNumb : int = 0
+    m_tempCharInfo : CharacterInfo
+    m_SpriteVertex : BetterList<HUDVertex>
+    m_bQueryTexture : bool = false
+    mAtlasID : int = 0
+    mDirty : bool = false
+    mHaveNullVertex : bool = false
+    {static} s_mainCamera : Camera
+    + {static} s_bEnterGame : bool = false
+    + {static} s_fCameraScale : float = 0.8f
+    + {static} s_fCameraScaleX : float = 0.8f
+    + {static} s_fCameraScaleY : float = 0.8f
+    + {static} s_fNumberScale : float = 1.0f
+    + {static} OnEnterGame() : void
+    + {static} OnLeaveGame() : void
+    + {static} GetHUDMainCamera() : Camera
+    + SetAtlasID(nAtlasID:int) : void
+    + AtlasID : int <<get>>
+    - QueryTexture() : void
+    - ReleaseTexture() : void
+    GetReserveY() : float
+    OnLoadHudAtlas() : void
+    + SetFont(font:UIFont) : void
+    + Release() : void
+    + CleanAllVertex() : void
+    + FastClearVertex() : void
+    + PushHUDVertex(v:HUDVertex) : void
+    + EraseHUDVertex(v:HUDVertex) : void
+    + VertexDirty() : void
+    + IsDirty() : bool
+    + SpriteNumb : int <<get>>
+    + OldSpriteNumb : int <<get>>
+    + UpdateLogic() : void
+    FillVertex() : void
+    PrepareWrite(nVertexNumb:int) : void
+    UpdateMesh() : void
+    AdjustIndexs(nVertexCount:int) : void
+    + PushChar(vWorld:Vector3, fScreenX:float, fScreenY:float, fLocalX:float, fLocalY:float, ch:char, clrLeftUp:Color, clrLeftDown:Color, clrRightUp:Color, clrRightDown:Color) : void
+}
+enum HUDNumberRenderType {
+    HUD_SHOW_EXP_ADD,
+    HUD_SHOW_LIFE_EXP,
+    HUD_SHOW_MONEY_ADD,
+    HUD_SHOW_XINFA,
+    HUD_SHOW_HP_HURT,
+    HUD_SHOW_COMMON_ATTACK,
+    HUD_SHOW_CT_ATTACKED,
+    HUD_SHOW_CT_ATTACK,
+    HUD_SHOW_ABSORB,
+    HUB_SHOW_DODGE,
+    HUD_SHOW_RECOVER_HP,
+    HUD_SHOW_PET_ATTACK,
+    HUD_SHOW_NUMBER,
+}
+class HUDNumberEntry {
+    + m_tf : Transform
+    + m_pNext : HUDNumberEntry
+    + m_nType : HUDNumberRenderType
+    + m_vPos : Vector3
+    + m_vScreenPos : Vector2
+    + m_vInitOffset : Vector2
+    + m_vMove : Vector2
+    + m_fAniScale : float
+    + m_fScale : float
+    + m_fAlpha : float
+    + m_aSprite : BetterList<HUDVertex>
+    + m_nWidth : int = 0
+    + m_nHeight : int = 0
+    + m_nSpriteGap : int = 0
+    + m_fStartTime : float = 0.0f
+    + m_bStop : bool = false
+    + reset() : void
+    + ReleaseVertex() : void
+    + UpdateScreenPos(attrib:HudAnimAttibute) : bool
+    + CaleCameraScale(vCameraPos:Vector3) : void
+    + PushSprite(y:float, nSpriteID:int) : void
+    + MakeLeft() : void
+    + MakeCenter() : void
+    + MakeRight() : void
+    MoveAll(fMoveX:float) : void
+}
+class HUDSprtieSetting {
+    + m_nHeadID : int
+    + m_nAddID : int
+    + m_nSubID : int
+    + m_NumberID : int[]
+    + InitNumber(szHeadName:string, szPrefix:string) : void
+}
+class HUDNumberRender {
+    {static} s_pHUDNumberRenderIns : HUDNumberRender = null
+    + {static} Instance : HUDNumberRender <<get>>
+    m_bInit : bool = false
+    m_bAddUpdateLogic : bool = false
+    m_bKeep1280x720 : bool = true
+    m_bAddCommandBuffer : bool = false
+    m_fLastUpdateLogicTime : float = 0.0f
+    m_aTtribute : HudAnimAttibute[]
+    m_aInvalid : HUDNumberEntry
+    m_Settings : HUDSprtieSetting[]
+    m_fDurationTime : float = 2.0f
+    m_ValidList : HUDNumberEntry
+    m_tempNumb : BetterList<int>
+    m_MeshRender : HUDRender
+    m_bMeshDirty : bool = false
+    m_bCalcCameraScale : bool = false
+    m_bCaleScreenScale : bool = false
+    m_fScreenScaleX : float = 1.0f
+    m_fScreenScaleY : float = 1.0f
+    m_bOpenUI : bool = false
+    m_bOldOpenUI : bool = false
+    m_bStartDark : bool = false
+    m_bStartMovie : bool = false
+    m_bOldStartDark : bool = false
+    m_fStartDarkTime : float = 0.0f
+    m_fDarkTime : float = 0.0f
+    m_oldCamera : Camera
+    m_renderCamera : Camera
+    s_cmdBuffer : CommandBuffer
+    InitHUDSetting(hudSetting:HudSetting) : void
+    + {static} ApplySetting(hudSetting:HudAniSetting) : void
+    + GetCmdBuffer() : CommandBuffer
+    + OnLeaveGame() : void
+    ReleaseCmmmandBuffer() : void
+    + OnOpenUI() : void
+    + OnCloseUI() : void
+    + OnStartScreenDark(fTime:float) : void
+    + OnEndScreenDark() : void
+    + OnBeginMovie() : void
+    + OnEndMovie() : void
+    CleanCurrentNumber() : void
+    InitHUD() : void
+    QueryHudNumber(nType:HUDNumberRenderType) : HUDNumberEntry
+    ReleaseHudNumber(pNode:HUDNumberEntry) : void
+    m_bPuase : bool = false
+    m_currentDuration : float = 0.0f
+    PlayAnimation(pNode:HUDNumberEntry, bFirst:bool) : void
+    OnPush(pNode:HUDNumberEntry) : void
+    OnErase(pNode:HUDNumberEntry) : void
+    FillMeshRender() : void
+    CaleScreenScale() : void
+    UpdateLogic(delta:float) : void
+    CleanAllMeshRender() : void
+    + AddHudNumber(tf:Transform, nType:HUDNumberRenderType, nNumber:int, bShowHead:bool, bShowAdd:bool, bShowSub:bool) : void
+}
+class HUDTitleBase {
+    + m_vPos : Vector3
+    + m_vScreenPos : Vector2
+    + m_fScale : float = 1.0f
+    + m_fOffsetY : float
+    # m_aSprite : BetterList<HUDVertex>
+    {static} s_pFont : UIFont = null
+    + {static} GetHUDTitleFont() : UIFont
+    # ClearSprite() : void
+    # CaleCameraScale(vCameraPos:Vector3) : void
+    # OnChangeScreenPos() : void
+    # PrepareRebuildMesh() : void
+    # SetScale(fScale:float) : void
+    # SlicedFill(nSpriteID:int, nWidth:int, nHeight:int, nStart:int, fBloodPos:float) : void
+    # PushSprite(nSpriteID:int, nWidth:int, nHeight:int, fx:float, fy:float) : HUDVertex
+    # PushChar(tempCharInfo:CharacterInfo, ch:char, fx:float, fy:float, clrLeftUp:Color32, clrLeftDown:Color32, clrRightUp:Color32, clrRightDown:Color32) : HUDVertex
+    # PushShadow(tempCharInfo:CharacterInfo, ch:char, fx:float, fy:float, clrShadow:Color32, fMoveX:float, fMoveY:float) : HUDVertex
+    # OffsetXY(nStart:int, nEnd:int, fOffsetX:float, fOffsetY:float) : void
+    # Offset(nStart:int, nEnd:int, fOffsetX:float, fOffsetY:float) : void
+    # AlignDown(nStart:int, nEnd:int, fOffsetX:float, fHeight:float) : void
+}
+class HUDRender {
+    m_MeshList : BetterList<HUDMesh>
+    m_ValidList : BetterList<HUDMesh>
+    m_MeshFont : HUDMesh
+    m_curFontMesh : HUDMesh
+    + m_bMeshDirty : bool
+    + QueryMesh(nAtlasID:int) : HUDMesh
+    + FontMesh() : HUDMesh
+    + OnChangeFont(uiFont:UIFont) : void
+    + Release() : void
+    + FastClearVertex() : void
+    + FillMesh() : void
+    + OnCacelRender() : void
+    + RenderTo(cmdBuffer:CommandBuffer) : void
+}
+class HUDRenderPassFeature {
+    m_ScriptablePass : CustomRenderPass
+    + <<override>> Create() : void
+    + <<override>> AddRenderPasses(renderer:ScriptableRenderer, renderingData:RenderingData) : void
+}
+class CustomRenderPass {
+    + <<override>> OnCameraSetup(cmd:CommandBuffer, renderingData:RenderingData) : void
+    + <<override>> Execute(context:ScriptableRenderContext, renderingData:RenderingData) : void
+    + <<override>> OnCameraCleanup(cmd:CommandBuffer) : void
+}
+ScriptableRendererFeature <|-- HUDRenderPassFeature
+HUDRenderPassFeature +-- CustomRenderPass
+ScriptableRenderPass <|-- CustomRenderPass
+class HUDTalk {
+    m_tf : Transform
+    m_MeshRender : HUDRender
+    m_HyperlinkNode : BetterList<HUDVertex>
+    m_fStartTime : float
+    m_fEndTime : float
+    m_szTalk : string
+    m_bHaveHyperlink : bool = false
+    ReleaseTalk() : void
+    Render(cmdBuffer:CommandBuffer) : void
+    CheckPos(bCameraDirty:bool, vCameraPos:Vector3) : void
+    FillMesh() : void
+    ShowTalk(szTalk:string, nColorIndex:int) : void
+    UpdateGif(bMeshDirth:bool, deltaTime:float) : void
+    RebuildCharUV(uiFont:UIFont) : void
+}
+class HUDTalkRender {
+    {static} s_HUDTalkRenderIns : HUDTalkRender = null
+    + {static} Instance : HUDTalkRender <<get>>
+    m_TalkList : List<HUDTalk>
+    m_bMeshDirty : bool = false
+    m_bHideAllTalk : bool = false
+    + ShowTalk(tf:Transform, szTalk:string, fOffsetY:float, fShowTime:float, nColorIndex:int) : void
+    EraseTalk(tf:Transform) : void
+    + IsMeshDirty() : bool
+    + OnAllFontChanged(uiFont:UIFont) : void
+    + IsHideAllTalk() : bool
+    + HideAllTalk() : void
+    + ShowAllTalk() : void
+    + UpdateLogic(bCameraDirty:bool, vCameraPos:Vector3) : void
+    + TryRenderTalk(cmdBuffer:CommandBuffer) : bool
+}
+HUDTitleBase <|-- HUDTalk
+HUDTalk +-- HUDTalkRender
+enum UIFontUnitType {
+    UnitType_Char,
+    UnitType_Icon,
+    UnitType_Gif,
+    UnitType_Link,
+    UnitType_Space,
+    UnitType_Enter,
+}
+enum UIHyperlinkType {
+    None,
+    Underline,
+    Underline_Flash,
+}
+class UIFontUnit {
+    + m_nX : int
+    + m_nY : int
+    + m_nWidth : int
+    + m_nHeight : int
+    + m_nLineHeight : int
+    + m_type : UIFontUnitType
+    + m_nIconID : int
+    + m_nObjIndex : int
+    + m_nRow : int
+    + m_nCharPos : int
+    + m_ch : char
+    + m_color1 : Color32
+    + m_color2 : Color32
+    + m_color3 : Color32
+    + m_color4 : Color32
+    + m_bCustomColor : bool
+    + m_bZoom : bool
+    + right : int <<get>>
+    + bottom : int <<get>>
+    + midX : int <<get>>
+}
+class UIFontCustomObject {
+    + m_type : UIFontUnitType
+    + m_nIconID : int
+    + m_szLink : string
+    + m_szCustomDesc : string
+    + m_HyperlinkType : UIHyperlinkType
+}
+class HUDCharInfo <<struct>> {
+    + CharType : UIFontUnitType
+    + bChar : bool
+    + bCustomColor : bool
+    + ch : char
+    + SpriteID : int
+    + SpriteWidth : short
+    + SpriteHeight : short
+    + CustomColor : Color32
+    + nX : int
+    + nY : int
+    + nLine : int
+    + LineH : int
+}
+class HUDTextParse {
+    + m_Sprites : HUDCharInfo[]
+    + LineHeight : short[]
+    + m_SpriteCount : int
+    + m_szText : string
+    m_ValidChars : char[]
+    m_nCharCount : int
+    m_bCharDirty : bool = false
+    m_colors : BetterList<Color32>
+    m_CustomObj : List<UIFontCustomObject>
+    {static} s_pTextParse : HUDTextParse
+    + {static} Instance : HUDTextParse <<get>>
+    Init() : void
+    AutoGrow() : void
+    push_char(ch:char, nCharPos:int) : void
+    push_enter(ch:char, nCharPos:int) : void
+    GetX16(iStart:int) : int
+    IsColorARGB(szText:string, iStart:int) : bool
+    GetColorValue(szText:string, iStart:int) : int
+    AnylseColorARGB(iStart:int) : void
+    TryParseOldColor(iStart:int) : bool
+    ParseEndCode(iStart:int) : void
+    TryParseColorARGB(iStart:int) : bool
+    ParseColorRGB(iStart:int) : bool
+    ParseMulNumb(aNumb:int[], iStart:int, chEnd:char, chTab:char) : int
+    push_icon(nIconID:int, nWidth:int, nHeight:int, nCharPos:int) : void
+    push_gif(nGifID:int, nWidth:int, nHeight:int, nCharPos:int) : void
+    SetLastColor(pNode:HUDCharInfo) : void
+    GetLastColor() : Color32
+    ParseIocnID(iStart:int) : void
+    ParseIconName(iStart:int) : void
+    ParseGifName(iStart:int) : void
+    push_link_char(ch:char, nCharPos:int, nObjIndex:int) : void
+    push_link(szLink:string, szCustomDesc:string, nCharPos:int, linkType:UIHyperlinkType) : void
+    TryParseOldColor(szText:string, iStart:int) : bool
+    ParseLinkColorARGB(szText:string, iStart:int) : void
+    IsColorRGB(szText:string, iStart:int) : bool
+    ParseColorRGB(szText:string, iStart:int) : bool
+    ScaleLinkColor(szLink:string, szCustomDesc:string, nCharPos:int) : void
+    ParseLink(iStart:int) : void
+    ParseNumb(nIconID:int, iStart:int, chEnd1:char, chEnd2:char) : bool
+    push_space(nW:int, nH:int, nCharPos:int) : void
+    ParseSpace(iStart:int) : void
+    ParseObject(iStart:int) : void
+    + ParseText(szText:string) : void
+}
+class HUDTilteLine {
+    + m_szText : string
+    + m_szValidText : string
+    + m_fWidth : float
+    + m_nHeight : int
+    + m_nType : HUDTilteType
+    + m_nColorIndex : int
+    + m_nSpriteID : int
+    + m_nStart : int
+    + m_nEnd : int
+    + m_nLine : int
+}
+enum HUDTilteType {
+    PlayerName,
+    PlayerPrestige,
+    PlayerCorp,
+    PlayerDesignation,
+    MonsterName,
+    ItemName,
+    PetName,
+    Blood,
+    PKFlag,
+    HeadIcon,
+    Tilte_Number,
+}
+class HUDTitleInfo {
+    + m_tf : Transform
+    + m_fDistToCamera : float = 0.0f
+    m_bInitHUDMesh : bool = false
+    m_bNeedHide : bool = false
+    m_bDirty : bool = false
+    m_bIsMain : bool = false
+    m_TitleLine : HUDTilteLine[]
+    m_nTitleNumb : int = 0
+    m_fLineOffsetY : float
+    m_fCurLineHeight : float
+    m_fCurLineWidth : float
+    m_nStartLineIndex : int
+    m_nBloodIndex : int
+    m_nBloodSpriteID : int
+    m_nBloodType : HUDBloodType
+    m_nLines : int
+    m_nMeridianIndex : int
+    m_nMeridianNumb : int
+    m_pBatcher : HUDTitleInfo.HUDTitleBatcher
+    m_nBatcherIndex : int
+    m_fLastMoveTime : float = 0.0f
+    m_nTitleID : int = 0
+    RebuildCharUV(tempCharInfo:CharacterInfo) : void
+    RebuildFontUI() : void
+    ApplyMove(bCameraDirty:bool, vCameraPos:Vector3) : void
+    + EraseSpriteFromMesh() : void
+    + ShowTitle(bShow:bool) : void
+    + OnScale() : void
+    + OnRelease() : void
+    + SetOffsetY(fOffsetY:float) : void
+    + Clear() : void
+    # RebuildForEditor() : void
+    + BeginTitle() : void
+    + EndTitle() : void
+    + PushTitle(szText:string, titleType:HUDTilteType, nColorIndex:int) : void
+    PushMeridianNumber(nNumb:int) : void
+    + ShowMeridianNumber(nMeridianNumb:int) : void
+    + HideMeridianNumber() : void
+    UpdateMeridianNumber(nMeridianNumb:int) : void
+    + PushIcon(titleType:HUDTilteType, nSpriteID:int) : void
+    + PushBlood(nType:HUDBloodType, fBloodPos:float) : void
+    + GetBloodType() : HUDBloodType
+    + SetBloodPos(fBloodPos:float) : void
+    Align() : void
+    PushSliceTitle(nSpriteID:int, nWidth:int, nHeight:int, fx:float, fy:float, fBloodPos:float) : void
+}
+class HUDTitleBatcher {
+    + m_ValidTitles : BetterList<HUDTitleInfo>
+    + m_MeshRender : HUDRender
+    + m_bNeedSort : bool = false
+    + m_bTitleMove : bool = false
+    + m_bStatic : bool = false
+    m_bRebuildMesh : bool = false
+    m_bHaveNullTitle : bool = false
+    m_nSortVeresion : int = 0
+    m_nMaxSortCount : int = 0
+    CompareTitleByDist() : void
+    InitTitleHUDMesh(title:HUDTitleInfo) : void
+    + OnAllFontChanged(uiFont:UIFont) : void
+    PrepareRebuild() : void
+    + UpdateLogic(bCameraDirty:bool, vCameraPos:Vector3) : void
+    + PushTitle(title:HUDTitleInfo) : void
+    + SwitchPushTitle(title:HUDTitleInfo) : void
+    + EraseTitle(title:HUDTitleInfo) : void
+}
+class HUDTitleRender {
+    m_HudTitles : Dictionary<int, HUDTitleInfo>
+    m_DelayReleaseTitles : BetterList<int>
+    m_nHudID : int = 0
+    m_StaticBatcher : HUDTitleBatcher
+    m_DynamicBatcher : HUDTitleBatcher
+    m_bAddUpdate : bool = false
+    m_vLastCameraPos : Vector3
+    m_vLastEulerAngles : Vector3
+    m_renderCameara : Camera
+    m_cmdBuffer : CommandBuffer
+    m_tfMain : Transform
+    m_oldCamera : Camera
+    m_bHideAllTitle : bool = false
+    m_fLastCheckMoveTime : float = 0.0f
+    m_bInitFontCallback : bool = false
+    m_bOpenUI : bool = false
+    m_bOldOpenUI : bool = false
+    m_bStartDark : bool = false
+    m_bOldStartDark : bool = false
+    m_fStartDarkTime : float = 0.0f
+    m_fDarkTime : float = 0.0f
+    m_nUpdateVer : int = 0
+    m_nCameraUpdateVer : int = 0
+    m_nBaseUpdateVer : int = 0
+    m_bMeshDirty : bool = false
+    {static} s_HUDTitleRenderIns : HUDTitleRender = null
+    + {static} Instance : HUDTitleRender <<get>>
+    HUDTitleRender()
+    + GetCmdBuffer() : CommandBuffer
+    + SetMainPlayer(tfMain:Transform) : void
+    + OnEnterGame() : void
+    + OnLeaveGame() : void
+    ReleaseCmmmandBuffer() : void
+    + OnOpenUI() : void
+    + OnCloseUI() : void
+    + ShowAllTitle(bShowAllTitle:bool) : void
+    + OnStartScreenDark(fTime:float) : void
+    + OnEndScreenDark() : void
+    + OnEndMovie() : void
+    + RegisterTitle(tf:Transform, fOffsetY:float, bIsMain:bool) : int
+    + ReleaseTitle(nTitleID:int) : void
+    + ApplySetting(hudSetting:HudAniSetting) : void
+    + GetTitle(nTitleID:int) : HUDTitleInfo
+    OnAllFontChanged(font:Font) : void
+    SwitchDynamieStatic() : void
+    + OnUpdateCameara() : void
+    UpdateLogic(delta:float) : void
+    CaleNumberScale(vCameraPos:Vector3) : void
+    BaseUpdateLogic(delta:float) : void
+    FillMeshRender() : void
+}
+HUDTitleBase <|-- HUDTitleInfo
+HUDTitleInfo +-- HUDTitleBatcher
+HUDTitleInfo +-- HUDTitleRender
+@enduml
