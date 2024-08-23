@@ -11,21 +11,41 @@
 // *		  			   (__/ \__)			            *
 // **********************************************************
 
+using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
 
 namespace Sample.Sample3
 {
-    public partial struct TurretRotationSystem : ISystem
+	[BurstCompile]
+    partial struct TurretRotationSystem : ISystem
     {
-        public void Update(ref SystemState state)
+	    [BurstCompile]
+        public void OnUpdate(ref SystemState state)
         {
-            var rotation = quaternion.RotateY(SystemAPI.Time.DeltaTime * math.PI);
-            foreach (var transform in SystemAPI.Query<LocalTransform>())
-            {
-                transform.Rotate(rotation);
-            }
+	        quaternion rotation = quaternion.RotateY(SystemAPI.Time.DeltaTime * math.PI);
+	        foreach (var transform in SystemAPI.Query<RefRW<LocalToWorld>>().WithAll<Turret>())
+	        {
+		        Quaternion q = rotation;
+		        Vector3 angel = q.eulerAngles;
+		        q = transform.ValueRW.Rotation;
+		        angel += q.eulerAngles;
+		        rotation = Quaternion.Euler(angel);
+		        LocalTransform localTransform = new LocalTransform();
+		        localTransform.Position = transform.ValueRW.Position;
+		        localTransform.Rotation = rotation;
+		        localTransform.Scale = 1;
+		        float4x4 mat = localTransform.ToMatrix();
+		        float3 scale = transform.ValueRW.Value.Scale();
+		        mat.c0 *= scale.x;
+		        mat.c1 *= scale.y;
+		        mat.c2 *= scale.z;
+		        transform.ValueRW.Value = mat;
+	        }
         }
+        
     }
 }
