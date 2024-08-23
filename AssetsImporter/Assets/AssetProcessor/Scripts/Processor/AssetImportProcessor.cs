@@ -1,0 +1,133 @@
+﻿// // **********************************************************
+// // *		                .-"""-.							*
+// // *		               / .===. \			            *
+// // *		               \/ 6 6 \/			            *
+// // *		     ______ooo__\__=__/_____________			*
+// // *		    / @author     Leon			   /			*
+// // *		   / @Modified   2024-07-06       /			    *
+// // *		  /_____________________ooo______/			    *
+// // *		  			    |_ | _|			                *
+// // *		  			    /-'Y'-\			                *
+// // *		  			   (__/ \__)			            *
+// // **********************************************************
+//
+// using System.Linq;
+// using AssetPreprocessor.Scripts.Editor;
+// using UnityEditor;
+// using UnityEngine;
+//
+// namespace AssetProcessor
+// {
+// 	public class AssetImportProcessor : AssetPostprocessor
+// 	{
+// 		#region Audio
+// 		/// <summary>
+//         /// https://docs.unity3d.com/ScriptReference/AssetPostprocessor.OnPreprocessAudio.html
+//         /// 
+//         /// IMPORTANT:
+//         /// Use OnPostprocessAudio() hook instead of OnPreprocessAudio() since OnPostprocessAudio gives a reference to
+//         /// the AudioClip, which is needed for AudioClip.length.
+//         /// </summary>
+//         private void OnPreprocessAudio()
+//         {
+//             var importer = assetImporter as AudioImporter;
+//
+//             if (importer == null) return;
+//
+//             var configs = AssetProcessorConfig.DefaultFile;
+//
+//             if (configs.ConfigNodes.Count == 0)
+//             {
+//                 return;
+//             }
+//
+//             AudioProcessorSettings config = null;
+//             
+//             configs = configs
+//                 .Where(conf => conf.ShouldUseConfigForAssetImporter(assetImporter))
+//                 .ToList();
+//             
+//             configs.Sort((config1, config2) => config1.ConfigSortOrder.CompareTo(config2.ConfigSortOrder));
+//
+//             
+//
+//             for (var i = 0; i < configs.Count; i++)
+//             {
+//                 var configToTest = configs[i];
+//
+//                 if (!AssetPreprocessorUtils.DoesRegexStringListMatchString(configToTest.PlatformsRegexList, platformName)) continue;
+//                 
+//                 // Found matching config.
+//                 config = configToTest;
+//                 
+//                 Debug.Log($"Using: {config.name}", config);
+//                 break;
+//             }
+//
+//             // If could not find a matching config, don't process the asset.
+//             if (config == null) return;
+//
+//             var hasSampleSettingsOverrides = false;
+//
+//             if (importer.loadInBackground != config.LoadInBackground)
+//             {
+//                 importer.loadInBackground = config.LoadInBackground;
+//                 hasSampleSettingsOverrides = true;
+//             }
+// #if !UNITY_2022_2_OR_NEWER
+//             if (importer.preloadAudioData != config.PreloadAudioData)
+//             {
+//                 importer.preloadAudioData = config.PreloadAudioData;
+//                 hasSampleSettingsOverrides = true;
+//             }
+// #endif
+//             if (importer.forceToMono != config.ForceToMono)
+//             {
+//                 importer.forceToMono = config.ForceToMono;
+//                 hasSampleSettingsOverrides = true;
+//             }
+//             
+//             if (importer.ambisonic != config.Ambisonic)
+//             {
+//                 importer.ambisonic = config.Ambisonic;
+//                 hasSampleSettingsOverrides = true;
+//             }
+//
+//             var sampleSettings = importer.GetOverrideSampleSettings(platformName);
+//
+//             if (sampleSettings.loadType != config.AudioClipLoadType)
+//             {
+//                 sampleSettings.loadType = config.AudioClipLoadType;
+//                 hasSampleSettingsOverrides = true;
+//             }
+//
+//             if (sampleSettings.compressionFormat != config.AudioCompressionFormat)
+//             {
+//                 sampleSettings.compressionFormat = config.AudioCompressionFormat;
+//                 hasSampleSettingsOverrides = true;
+//             }
+//
+//             if (System.Math.Abs(sampleSettings.quality - config.Quality) > 0.01f)
+//             {
+//                 sampleSettings.quality = config.Quality;
+//                 hasSampleSettingsOverrides = true;
+//             }
+//
+//             if (sampleSettings.sampleRateSetting != config.AudioSampleRateSetting)
+//             {
+//                 sampleSettings.sampleRateSetting = config.AudioSampleRateSetting;
+//                 hasSampleSettingsOverrides = true;
+//             }
+//
+//             if (hasSampleSettingsOverrides || config.ForcePreprocess)
+//             {
+//                 config.PlatformsRegexList.ForEach(platformRegexString => importer.SetOverrideSampleSettings(platformRegexString, sampleSettings));
+//                 
+//                 // Be sure to set the platform override for the current platform string, in case the current platform was
+//                 // NOT a perfect match to one of the platform regex strings.
+//                 importer.SetOverrideSampleSettings(EditorUserBuildSettings.activeBuildTarget.ToString(), sampleSettings);
+//             }
+//         }
+// 		#endregion
+// 	}
+// }
