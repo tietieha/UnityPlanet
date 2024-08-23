@@ -12,11 +12,12 @@
 // **********************************************************
 
 using Unity.Entities;
+using Unity.Mathematics;
 
 namespace Sample.Sample3
 {
 	public struct CannonBall : IComponentData
 	{
-		public float Speed;
+		public float3 Speed;
 	}
 }
