@@ -4,7 +4,7 @@
 // *		               \/ 6 6 \/			            *
 // *		     ______ooo__\__=__/_____________			*
 // *		    / @author     Leon			   /			*
-// *		   / @Modified   2024-08-23       /			    *
+// *		   / @Modified   2024-08-27       /			    *
 // *		  /_____________________ooo______/			    *
 // *		  			    |_ | _|			                *
 // *		  			    /-'Y'-\			                *
@@ -16,25 +16,24 @@ using UnityEngine;
 
 namespace Sample.Sample3
 {
-	public class TurretAuthoring : MonoBehaviour
+	public class ConfigAuthoring : MonoBehaviour
 	{
-		public GameObject CannonBallPrefab;
-		public Transform CannonBallSpawn;
+		public GameObject TankPrefab;
+		public int TankCount;
+		public float SafeZoneRadius;
 	}
-
-	public class TurretBaker : Baker<TurretAuthoring>
+	
+	public class ConfigAuthoringBaker : Baker<ConfigAuthoring>
 	{
-		public override void Bake(TurretAuthoring authoring)
+		public override void Bake(ConfigAuthoring authoring)
 		{
 			var entity = GetEntity(TransformUsageFlags.Dynamic);
-			AddComponent(entity, new Turret
+			AddComponent(entity, new Config
 			{
-				CannonBallPrefab = GetEntity(authoring.CannonBallPrefab, TransformUsageFlags.Dynamic),
-				CannonBallSpawn = GetEntity(authoring.CannonBallSpawn, TransformUsageFlags.Dynamic),
+				TankPrefab = GetEntity(authoring.TankPrefab, TransformUsageFlags.Dynamic),
+				TankCount = authoring.TankCount,
+				SafeZoneRadius = authoring.SafeZoneRadius
 			});
-			AddComponent(entity, new Shooting());
-			SetComponentEnabled<Shooting>(entity, false);
-			
 		}
 	}
 }

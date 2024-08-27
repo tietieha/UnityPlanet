@@ -1,34 +1,26 @@
-﻿// **********************************************************
+// **********************************************************
 // *		                .-"""-.							*
 // *		               / .===. \			            *
 // *		               \/ 6 6 \/			            *
 // *		     ______ooo__\__=__/_____________			*
 // *		    / @author     Leon			   /			*
-// *		   / @Modified   2024-08-23       /			    *
+// *		   / @Modified   2024-08-27       /			    *
 // *		  /_____________________ooo______/			    *
 // *		  			    |_ | _|			                *
 // *		  			    /-'Y'-\			                *
 // *		  			   (__/ \__)			            *
 // **********************************************************
 
-using Unity.Entities;
-using Unity.Rendering;
 using UnityEngine;
 
 namespace Sample.Sample3
 {
-	public class CannonBallAuthoring : MonoBehaviour
+	public class CameraSingleton : MonoBehaviour
 	{
-		
-	}
-
-	public class CannonBallBaker : Baker<CannonBallAuthoring>
-	{
-		public override void Bake(CannonBallAuthoring authoring)
+		public static Camera Instance;
+		void Awake()
 		{
-			var entity = GetEntity(TransformUsageFlags.Dynamic);
-			AddComponent(entity, new CannonBall());
-			AddComponent(entity, new URPMaterialPropertyBaseColor());
+			Instance = GetComponent<Camera>();
 		}
 	}
 }

@@ -15,6 +15,7 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Rendering;
 using Unity.Transforms;
 
 namespace Sample.Sample3
@@ -26,9 +27,10 @@ namespace Sample.Sample3
 		[BurstCompile]
 		public void OnCreate(ref SystemState state)
 		{
+			state.RequireForUpdate<BeginSimulationEntityCommandBufferSystem.Singleton>();
 			m_LocalToWorldFromEntity = state.GetComponentLookup<LocalToWorld>(true);
 		}
-
+		
 		[BurstCompile]
 		public void OnUpdate(ref SystemState state)
 		{
@@ -42,14 +44,10 @@ namespace Sample.Sample3
 			};
 			turretShootingJob.Schedule();
 		}
-
-		[BurstCompile]
-		public void OnDestroy(ref SystemState state)
-		{
-
-		}
 	}
 
+	
+	[WithAll(typeof(Shooting))]
 	[BurstCompile]
 	public partial struct TurretShootingJob : IJobEntity
 	{
@@ -72,6 +70,10 @@ namespace Sample.Sample3
 			ECB.SetComponent(instance, new CannonBall
 			{
 				Speed = spawnLocalToWorld.Forward * 20.0f
+			});
+			ECB.SetComponent(instance, new URPMaterialPropertyBaseColor
+			{
+				Value = turret.Color
 			});
 		}
 	}
